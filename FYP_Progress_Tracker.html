@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Final Year Project Tracker</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--text:#1d2433;--muted:#667085;--line:#d5dcea;--accent:#2f5496;--navy:#1f3864;--ok:#2e7d32;--warn:#b26a00;--bad:#c00000;--soft:#e9eef8}
+@media(prefers-color-scheme:dark){:root{--bg:#12161f;--card:#1b2130;--text:#e6e9f0;--muted:#9aa4b8;--line:#2d364a;--accent:#7aa2f7;--navy:#9db8f0;--ok:#6fcf73;--warn:#f0b050;--bad:#ff6b6b;--soft:#242d42}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:16px 20px}
+h1{margin:0;font-size:20px;color:var(--navy)}.sub{color:var(--muted);font-size:13px}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
+.stat{background:var(--soft);border-radius:10px;padding:10px 12px}.stat b{display:block;font-size:20px}.stat span{font-size:12px;color:var(--muted)}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--accent)}
+nav{display:flex;gap:4px;padding:10px 20px 0;overflow-x:auto;border-bottom:1px solid var(--line);background:var(--card)}
+nav button{border:0;background:none;padding:10px 14px;font:inherit;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav button.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+main{padding:18px 20px 60px;max-width:1300px;margin:auto}
+button.b{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+button.g{background:none;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 12px;font:inherit;cursor:pointer}
+button.r{background:var(--bad);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+.alert{background:#fdecec;border:1px solid #f1b4b4;color:#8a1010;border-radius:10px;padding:12px 14px;margin-bottom:16px}
+@media(prefers-color-scheme:dark){.alert{background:#3a1f22;border-color:#7a3a40;color:#ffb4b4}}
+.alert button{margin-left:8px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start}
+.col{background:var(--soft);border-radius:12px;padding:10px;min-height:160px}.col.over{outline:2px dashed var(--accent)}
+.col h3{margin:2px 4px 10px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;justify-content:space-between}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;padding:10px;margin-bottom:9px;cursor:grab}
+.card:hover{box-shadow:0 2px 8px rgba(0,0,0,.12)}.card.late{border-left-color:var(--bad)}.card.done{opacity:.7}
+.card .t{font-weight:600;margin-bottom:6px}.tags{display:flex;flex-wrap:wrap;gap:5px;font-size:11.5px}
+.tag{background:var(--soft);border-radius:20px;padding:2px 8px;color:var(--muted)}.tag.bad{background:#fdecec;color:var(--bad)}.tag.warn{background:#fff3d6;color:var(--warn)}.tag.ok{background:#e4f3e5;color:var(--ok)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.panel h2{margin:0 0 4px;font-size:16px;color:var(--navy)}
+.row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
+.row .x{flex:1}.row.d .x{text-decoration:line-through;color:var(--muted)}
+.log{border-left:4px solid var(--warn);background:var(--card);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:10px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.log.blocked{border-left-color:var(--bad)}.log p{margin:4px 0}.log small{color:var(--muted)}
+details.w{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+details.w summary{padding:12px 16px;cursor:pointer;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+details.w.now{border-color:var(--accent)}details.w .in{padding:0 16px 14px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input,select,textarea{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text)}
+textarea{min-height:70px;resize:vertical}input[type=checkbox]{width:auto}
+dialog{border:1px solid var(--line);border-radius:14px;padding:20px;max-width:540px;width:92%;background:var(--card);color:var(--text)}
+dialog::backdrop{background:rgba(10,15,30,.55)}dialog h2{margin:0 0 4px;color:var(--navy)}
+.acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.cat{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}.cat .bar{flex:1;margin:0}.cat span{width:170px}
+footer{padding:20px;text-align:center;color:var(--muted);font-size:13px}footer button{margin:4px}
+.empty{color:var(--muted);padding:14px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div><h1>Final Year Project Tracker</h1><div class="sub" id="sub"></div></div>
+    <div><button class="b" onclick="openTask()">+ New task</button></div>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+<nav id="tabs"></nav>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+<footer>
+  <div>Saved automatically in this browser. Export a backup regularly.</div>
+  <button class="g" onclick="exportData()">Export backup (JSON)</button>
+  <button class="g" onclick="document.getElementById('imp').click()">Import backup</button>
+  <button class="g" onclick="resetAll()">Reset everything</button>
+  <input type="file" id="imp" accept="application/json" hidden onchange="importData(this)">
+</footer>
+<script>
+const START='2026-11-23', END='2027-07-22', KEY='fyp-tracker-v1';
+const PHASES=[
+ {id:1,name:'Review and design',s:'2026-11-23',e:'2027-01-22',c:'#2f5496'},
+ {id:2,name:'Experiments',s:'2027-01-23',e:'2027-03-22',c:'#2e7d32'},
+ {id:3,name:'Platform build',s:'2027-03-23',e:'2027-05-22',c:'#b26a00'},
+ {id:4,name:'Evaluation and writing',s:'2027-05-23',e:'2027-07-22',c:'#7b4fa3'}];
+const CATS=['Ran out of time','Technical problem','Waiting on someone','Data or access issue','Scope was too big','Low energy or health','Got distracted or put it off','Other'];
+const COLS=[['todo','To do'],['doing','In progress'],['blocked','Blocked'],['done','Done']];
+const SEED=[
+ [1,'Set up Zotero, GitHub repo and this tracker','2026-11-27'],[1,'Finalise proposal and get it approved','2026-12-04'],
+ [1,'Download datasets and check licences','2026-12-11'],[1,'Read core papers [1] to [6]','2026-12-18'],
+ [1,'Complete ethics checklist and get sign-off','2026-12-18'],[1,'Decide where satisfaction ratings (RQ3) come from','2026-12-18'],
+ [1,'Database design (ERD) and architecture diagrams','2027-01-08'],[1,'Literature review draft chapter','2027-01-15'],[1,'Supervisor review of design','2027-01-22'],
+ [2,'Preprocessing pipeline with PII masking','2027-02-05'],[2,'TF-IDF + Logistic Regression baseline','2027-02-12'],
+ [2,'Fine-tune DistilBERT','2027-02-26'],[2,'Fine-tune RoBERTa','2027-03-05'],[2,'Topic modelling with BERTopic','2027-03-12'],
+ [2,'Design agent score (AHT, FCR, sentiment shift)','2027-03-19'],[2,'Benchmark review with supervisor','2027-03-22'],
+ [3,'PostgreSQL schema and migrations','2027-04-02'],[3,'FastAPI endpoints (ingest and analytics)','2027-04-16'],
+ [3,'Integrate trained models into the API','2027-04-30'],[3,'React dashboard (upload, overview, views)','2027-05-14'],
+ [3,'Churn risk demonstration (stretch)','2027-05-21',1],[3,'Integration and system testing','2027-05-22'],
+ [4,'Accuracy, latency and correlation tests','2027-06-04'],[4,'Recruit 5 to 8 testers and run the SUS test','2027-06-18'],
+ [4,'Fix issues found in testing','2027-06-25'],[4,'Dissertation: methods and results chapters','2027-07-02'],
+ [4,'Dissertation: full draft to supervisor','2027-07-09'],[4,'Final references and formatting check','2027-07-16'],
+ [4,'Demo and presentation preparation','2027-07-20'],[4,'Submission day','2027-07-22']];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso=d=>new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const today=()=>iso(new Date());
+const dt=s=>new Date(s+'T00:00:00');
+const diff=(a,b)=>Math.round((dt(b)-dt(a))/864e5);
+const add=(s,n)=>{const d=dt(s);d.setDate(d.getDate()+n);return iso(d)};
+const fmt=s=>dt(s).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+const sh=s=>dt(s).toLocaleDateString(undefined,{day:'numeric',month:'short'});
+const uid=()=>Math.random().toString(36).slice(2,9);
+let S, tab='board';
+
+function seed(){return{tasks:SEED.map(a=>({id:uid(),phase:a[0],title:a[1],due:a[2],stretch:!!a[3],status:'todo',desc:'',slips:0,doneOn:'',notes:[]})),log:[],weeks:{}}}
+function load(){try{const r=localStorage.getItem(KEY);S=r?JSON.parse(r):seed()}catch(e){S=seed()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const T=id=>S.tasks.find(t=>t.id===id);
+const overdue=t=>t.status!=='done'&&t.due<today();
+const ph=t=>PHASES.find(p=>p.id===+t.phase)||PHASES[0];
+
+function render(){
+  const t=today(), total=S.tasks.length, done=S.tasks.filter(x=>x.status==='done').length;
+  const od=S.tasks.filter(overdue).length, len=diff(START,END)+1;
+  let sub;
+  if(t<START)sub='Project starts in '+diff(t,START)+' days ('+fmt(START)+')';
+  else if(t>END)sub='Project period ended on '+fmt(END);
+  else sub='Day '+(diff(START,t)+1)+' of '+len+' | '+diff(t,END)+' days left | ends '+fmt(END);
+  $('#sub').textContent=fmt(t)+'  -  '+sub;
+  const elapsed=Math.min(100,Math.max(0,(diff(START,t)+1)/len*100)), pct=total?Math.round(done/total*100):0;
+  const dueNow=S.tasks.filter(x=>x.due<=t).length;
+  $('#stats').innerHTML=
+   `<div class="stat"><b>${pct}%</b><span>tasks done (${done}/${total})</span><div class="bar"><i style="width:${pct}%"></i></div></div>`+
+   `<div class="stat"><b>${Math.round(elapsed)}%</b><span>of project time used</span><div class="bar"><i style="width:${elapsed}%"></i></div></div>`+
+   `<div class="stat"><b style="color:${od?'var(--bad)':'var(--ok)'}">${od}</b><span>overdue tasks</span></div>`+
+   `<div class="stat"><b>${dueNow}</b><span>tasks that should be done by today</span></div>`+
+   `<div class="stat"><b>${S.log.length}</b><span>accountability notes</span></div>`;
+  const tabs=[['board','Board'],['phases','Phases'],['weekly','Weekly review'],['acct','Accountability'+(od?' ('+od+')':'')]];
+  $('#tabs').innerHTML=tabs.map(a=>`<button class="${tab===a[0]?'on':''}" onclick="go('${a[0]}')">${a[1]}</button>`).join('');
+  $('#app').innerHTML=({board:vBoard,phases:vPhases,weekly:vWeekly,acct:vAcct})[tab]();
+  save();
+}
+function go(t){tab=t;render()}
+
+function alertBar(){
+  const od=S.tasks.filter(overdue);
+  if(!od.length)return'';
+  return`<div class="alert"><b>${od.length} overdue task${od.length>1?'s':''}.</b> Each one needs an honest accountability note and a new date.
+   <button class="r" onclick="go('acct')">Account for them</button></div>`;
+}
+function card(t){
+  const o=overdue(t), left=diff(today(),t.due), p=ph(t);
+  const dueTag=t.status==='done'?`<span class="tag ok">Done ${t.doneOn?sh(t.doneOn):''}${t.doneOn>t.due?' (late)':''}</span>`
+   :`<span class="tag ${o?'bad':left<=3?'warn':''}">${o?'Overdue '+(-left)+'d':'Due '+sh(t.due)}</span>`;
+  return`<div class="card ${o?'late':''} ${t.status==='done'?'done':''}" style="border-left-color:${o?'':p.c}" draggable="true" ondragstart="event.dataTransfer.setData('t','${t.id}')" onclick="openTask('${t.id}')">
+   <div class="t">${esc(t.title)}</div><div class="tags">${dueTag}<span class="tag">P${t.phase}</span>
+   ${t.stretch?'<span class="tag warn">Stretch</span>':''}${t.slips?`<span class="tag bad">Slipped x${t.slips}</span>`:''}${t.notes.length?`<span class="tag">${t.notes.length} note${t.notes.length>1?'s':''}</span>`:''}</div></div>`;
+}
+function vBoard(){
+  return alertBar()+'<div class="cols">'+COLS.map(([k,n])=>{
+    const ts=S.tasks.filter(t=>t.status===k).sort((a,b)=>a.due.localeCompare(b.due));
+    return`<div class="col" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="drop(event,'${k}')">
+     <h3>${n}<span>${ts.length}</span></h3>${ts.map(card).join('')||'<div class="empty">Drop tasks here</div>'}</div>`}).join('')+'</div>';
+}
+function drop(e,k){e.preventDefault();setStatus(e.dataTransfer.getData('t'),k)}
+function setStatus(id,k){
+  const t=T(id); if(!t||t.status===k)return;
+  if(k==='blocked'){t._prev=t.status;openAcct(id,'blocked');return}
+  t.status=k; t.doneOn=k==='done'?today():''; render();
+}
+function vPhases(){
+  return alertBar()+PHASES.map(p=>{
+    const ts=S.tasks.filter(t=>+t.phase===p.id).sort((a,b)=>a.due.localeCompare(b.due)), d=ts.filter(t=>t.status==='done').length;
+    return`<div class="panel"><h2 style="color:${p.c}">Phase ${p.id}: ${p.name}</h2><div class="sub">${fmt(p.s)} to ${fmt(p.e)} | ${d}/${ts.length} done</div>
+     <div class="bar"><i style="width:${ts.length?d/ts.length*100:0}%;background:${p.c}"></i></div><div style="margin-top:8px">`+
+     ts.map(t=>`<div class="row ${t.status==='done'?'d':''}"><input type="checkbox" ${t.status==='done'?'checked':''} onchange="setStatus('${t.id}',this.checked?'done':'todo')">
+      <span class="x" style="cursor:pointer" onclick="openTask('${t.id}')">${esc(t.title)}${t.stretch?' <span class="tag warn">Stretch</span>':''}</span>
+      <span class="tag ${overdue(t)?'bad':''}">${sh(t.due)}</span></div>`).join('')+
+     `</div><div style="margin-top:10px"><button class="g" onclick="openTask(null,${p.id})">+ Add task to this phase</button></div></div>`}).join('');
+}
+function weeks(){const a=[];for(let s=START;s<=END;s=add(s,7))a.push(s);return a}
+function vWeekly(){
+  const t=today();
+  return alertBar()+'<p class="sub">One check-in per week. Be specific about what did not happen and why. Open the current week first.</p>'+weeks().map((s,i)=>{
+    const e=add(s,6), w=S.weeks[s]||{}, ts=S.tasks.filter(x=>x.due>=s&&x.due<=e), d=ts.filter(x=>x.status==='done').length, now=t>=s&&t<=e;
+    const miss=ts.filter(x=>x.status!=='done'&&x.due<t).length;
+    return`<details class="w ${now?'now':''}" ${now?'open':''}><summary><b>Week ${i+1}: ${sh(s)} to ${sh(e)}${now?' (this week)':''}</b>
+     <span class="sub">${ts.length?d+'/'+ts.length+' due tasks done':'no tasks due'}${miss?' | <b style="color:var(--bad)">'+miss+' missed</b>':''}</span></summary><div class="in">
+     ${ts.map(x=>`<div class="row ${x.status==='done'?'d':''}"><span class="x">${esc(x.title)}</span><span class="tag">${x.status==='done'?'done':sh(x.due)}</span></div>`).join('')}
+     <label>What went well</label><textarea oninput="wk('${s}','well',this.value)">${esc(w.well)}</textarea>
+     <label>What did not get done, and the honest reason why</label><textarea oninput="wk('${s}','not',this.value)">${esc(w.not)}</textarea>
+     <label>My commitments for next week</label><textarea oninput="wk('${s}','next',this.value)">${esc(w.next)}</textarea></div></details>`}).join('');
+}
+function wk(s,k,v){(S.weeks[s]=S.weeks[s]||{})[k]=v;save()}
+function vAcct(){
+  const od=S.tasks.filter(overdue).sort((a,b)=>a.due.localeCompare(b.due));
+  const cnt={};S.log.forEach(l=>cnt[l.cat]=(cnt[l.cat]||0)+1);
+  const mx=Math.max(1,...Object.values(cnt));
+  let h=`<div class="panel"><h2>Needs accountability now</h2>`+(od.length?od.map(t=>`<div class="row"><span class="x"><b>${esc(t.title)}</b><br><span class="sub">Was due ${fmt(t.due)} (${-diff(today(),t.due)} days ago)</span></span>
+    <button class="r" onclick="openAcct('${t.id}','missed')">Account for it</button></div>`).join(''):'<div class="empty">Nothing overdue. Keep it that way.</div>')+'</div>';
+  h+=`<div class="panel"><h2>Why things slip (pattern)</h2>`+(S.log.length?CATS.filter(c=>cnt[c]).map(c=>`<div class="cat"><span>${c}</span><div class="bar"><i style="width:${cnt[c]/mx*100}%;background:var(--warn)"></i></div><b>${cnt[c]}</b></div>`).join(''):'<div class="empty">No notes yet. Patterns appear here once you start logging.</div>')+'</div>';
+  h+='<h2 style="color:var(--navy);font-size:16px">Accountability log</h2>';
+  h+=S.log.slice().reverse().map(l=>{const t=T(l.task);return`<div class="log ${l.type}"><small>${fmt(l.d)} | ${l.type==='blocked'?'Blocked':'Missed deadline'} | ${esc(l.cat)}</small>
+    <p><b>${esc(t?t.title:'(deleted task)')}</b></p><p><b>Why:</b> ${esc(l.reason)}</p>${l.plan?`<p><b>What I will do differently:</b> ${esc(l.plan)}</p>`:''}
+    ${l.newDue?`<small>New date: ${fmt(l.newDue)}${l.oldDue?' (was '+fmt(l.oldDue)+')':''}</small>`:''}</div>`}).join('')||'<div class="empty">The log is empty.</div>';
+  return h;
+}
+
+/* ---------- dialogs ---------- */
+function openTask(id,phase){
+  const t=id?T(id):{title:'',phase:phase||1,due:today(),status:'todo',desc:'',stretch:false,notes:[],slips:0};
+  $('#dlg').innerHTML=`<h2>${id?'Edit task':'New task'}</h2>
+   <label>Title</label><input id="f-title" value="${esc(t.title)}">
+   <label>Description</label><textarea id="f-desc">${esc(t.desc)}</textarea>
+   <label>Phase</label><select id="f-phase">${PHASES.map(p=>`<option value="${p.id}" ${+t.phase===p.id?'selected':''}>Phase ${p.id}: ${p.name}</option>`).join('')}</select>
+   <label>Due date</label><input type="date" id="f-due" value="${t.due}">
+   <label>Status</label><select id="f-status">${COLS.map(c=>`<option value="${c[0]}" ${t.status===c[0]?'selected':''}>${c[1]}</option>`).join('')}</select>
+   <label><input type="checkbox" id="f-stretch" ${t.stretch?'checked':''}> Stretch goal (cut first if time is short)</label>
+   ${id?`<label>Progress notes</label>${t.notes.map(n=>`<div class="sub">${sh(n.d)}: ${esc(n.text)}</div>`).join('')}<input id="f-note" placeholder="Add a progress note and save">`:''}
+   <div class="acts">${id?`<button class="g" style="color:var(--bad)" onclick="delTask('${id}')">Delete</button>`:''}<button class="g" onclick="$('#dlg').close()">Cancel</button><button class="b" onclick="saveTask('${id||''}')">Save</button></div>`;
+  $('#dlg').showModal();
+}
+function saveTask(id){
+  const title=$('#f-title').value.trim(); if(!title){$('#f-title').focus();return}
+  const o=id?T(id):{id:uid(),slips:0,notes:[],doneOn:''}; if(!id)S.tasks.push(o);
+  const st=$('#f-status').value, was=o.status;
+  Object.assign(o,{title,desc:$('#f-desc').value,phase:+$('#f-phase').value,due:$('#f-due').value||today(),stretch:$('#f-stretch').checked});
+  const n=$('#f-note'); if(n&&n.value.trim())o.notes.push({d:today(),text:n.value.trim()});
+  o.status=st; if(st==='done'&&was!=='done')o.doneOn=today(); if(st!=='done')o.doneOn='';
+  $('#dlg').close();
+  if(st==='blocked'&&was!=='blocked'&&id){o.status=was;o._prev=was;openAcct(o.id,'blocked');return}
+  render();
+}
+function delTask(id){if(confirm('Delete this task?')){S.tasks=S.tasks.filter(t=>t.id!==id);$('#dlg').close();render()}}
+function openAcct(id,type){
+  const t=T(id), miss=type==='missed';
+  $('#dlg').innerHTML=`<h2>${miss?'Why was this not achieved?':'Why is this blocked?'}</h2><div class="sub"><b>${esc(t.title)}</b>${miss?' | was due '+fmt(t.due):''}</div>
+   <label>Main reason</label><select id="a-cat">${CATS.map(c=>`<option>${c}</option>`).join('')}</select>
+   <label>What actually happened? Be honest and specific (at least a sentence)</label><textarea id="a-reason"></textarea>
+   <label>What will I do differently so this does not repeat?</label><textarea id="a-plan"></textarea>
+   <label>${miss?'New due date (required)':'Date I will unblock this by (optional)'}</label><input type="date" id="a-due" value="${miss?add(today(),3):''}" min="${today()}">
+   <div class="acts"><button class="g" onclick="cancelAcct('${id}')">Cancel</button><button class="b" onclick="saveAcct('${id}','${type}')">Save note</button></div>`;
+  $('#dlg').showModal();
+}
+function cancelAcct(id){const t=T(id);if(t)delete t._prev;$('#dlg').close();render()}
+function saveAcct(id,type){
+  const reason=$('#a-reason').value.trim(), due=$('#a-due').value;
+  if(reason.length<15){$('#a-reason').focus();$('#a-reason').placeholder='Write at least a full sentence.';return}
+  if(type==='missed'&&!due){$('#a-due').focus();return}
+  const t=T(id);
+  S.log.push({id:uid(),d:today(),task:id,type,cat:$('#a-cat').value,reason,plan:$('#a-plan').value.trim(),newDue:due,oldDue:t.due});
+  if(type==='missed'){t.due=due;t.slips=(t.slips||0)+1} else {t.status='blocked'; if(due)t.due=due}
+  delete t._prev; $('#dlg').close(); render();
+}
+
+/* ---------- backup ---------- */
+function exportData(){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));
+  a.download='fyp-tracker-backup-'+today()+'.json';a.click();
+}
+function importData(el){
+  const f=el.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.tasks)throw 0;S=d;render()}catch(e){alert('That file is not a valid tracker backup.')}};
+  r.readAsText(f); el.value='';
+}
+function resetAll(){if(confirm('Delete all progress and notes and start again? Export a backup first.')){S=seed();render()}}
+load(); render();
+</script>
+</body>
+</html>
